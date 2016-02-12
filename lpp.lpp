@@ -1,0 +1,13 @@
+%{
+#include "hpp.hpp"
+%}
+%option noyywrap
+%option yylineno
+%%
+#[^\n]*				{}
+[a-zA-Z0-9_.]+		TOC(SYM)
+\[					TOC(L)
+\]					TOC(R)
+\=					TOC(EQ)
+[ \t\r\n]+			{}
+%%
