@@ -1,6 +1,22 @@
+[
 
 skelex = [
-	files = [ src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp Makefile ]
+	files = [ 
+		src = file @ src.src
+		log = file @ log.log
+		ypp.ypp lpp.lpp
+		hpp = file @ hpp.hpp
+		cpp = file @ cpp.cpp
+		make = file @ Makefile
+	]
 	bat.bat .gitignore
 ]
 
+hpp = [
+[ '#ifndef _H_'+upcase@MODULE '#define _H_'+upcase@MODULE ]
+[ '#endif // _H_'+upcase@MODULE ]
+]
+
+bat.bat = ( file@bat.bat = [ '@start .' 'gvim -p '+files ] )
+
+]

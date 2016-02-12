@@ -2,17 +2,27 @@
 #include "hpp.hpp"
 %}
 %defines %union { Sym*o; }
-%token <o> SYM
-%token <o> L R
-%token <o> EQ
-%type <o> ex list
+%token <o> SYM STR
+%token <o> L R LQ RQ
+%token <o> EQ AT COLON
+%token <o> ADD
+%type <o> ex scalar list
+
+%left EQ
+%left ADD
+%left AT
 %%
-REPL	: | REPL ex	{ W($2); W("\n"); } ;
-ex		: SYM
-		| L list R	{ $$=$2; }
-		| ex EQ ex	{ $$=$2; $$->push($1); $$->push($3); }
+REPL	: | REPL ex		{ W($2->eval()); W("\n"); } ;
+scalar	: SYM | STR ;
+ex		: scalar
+		| L ex R	{ $$=$2; }
+		| LQ list RQ	{ $$=$2; }
+		| ex EQ ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex AT ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex COLON ex	{ $$=$2; $$->push($1); $$->push($3); }
+		| ex ADD ex		{ $$=$2; $$->push($1); $$->push($3); }
 ;
-list	: 			{ $$=new List(); }
-		| list ex	{ $$=$1; $$->push($2); }
+list	: 				{ $$=new List(); }
+		| list ex		{ $$=$1; $$->push($2); }
 ;
 %%	 
