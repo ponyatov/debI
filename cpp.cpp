@@ -67,6 +67,8 @@ Sym* Op::eval() {
 Fn::Fn(string V, FN F):Sym("fn",V) { fn=F; }
 Sym* Fn::at(Sym*o) { return fn(o); }
 
+Lambda::Lambda():Sym("^","^") {}
+
 File::File(Sym*o):Sym("file",o->val) {}
 string File::tagval() { return tagstr(); }
 Sym* File::eq(Sym*o) {

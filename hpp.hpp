@@ -44,6 +44,8 @@ struct Op:Sym { Op(string); Sym*eval(); };
 typedef Sym*(*FN)(Sym*);
 struct Fn:Sym { Fn(string,FN); FN fn; Sym*at(Sym*); };
 
+struct Lambda:Sym { Lambda(); };
+
 struct Dir:Sym { Dir(Sym*); string tagval(); };
 struct File:Sym { File(Sym*); string tagval(); Sym*eq(Sym*); };
 

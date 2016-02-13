@@ -18,6 +18,8 @@ string LexString;
 \)					TOC(Op,R)
 \[					TOC(Op,LQ)
 \]					TOC(Op,RQ)
+\{					TOC(Op,LB)
+\}					TOC(Op,RB)
 
 \=					TOC(Op,EQ)
 \@					TOC(Op,AT)

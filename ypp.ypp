@@ -3,10 +3,10 @@
 %}
 %defines %union { Sym*o; }
 %token <o> SYM STR
-%token <o> L R LQ RQ
+%token <o> L R LQ RQ LB RB
 %token <o> EQ AT COLON TILD
 %token <o> ADD SUB MUL DIV POW
-%type <o> ex scalar list
+%type <o> ex scalar list lambda
 
 %left EQ
 %left ADD SUB
@@ -20,6 +20,7 @@ scalar	: SYM | STR ;
 ex		: scalar
 		| L ex R		{ $$=$2; }
 		| LQ list RQ	{ $$=$2; }
+		| LB lambda RB	{ $$=$2; }
 		| ex EQ ex		{ $$=$2; $$->push($1); $$->push($3); }
 		| ex AT ex		{ $$=$2; $$->push($1); $$->push($3); }
 		| ex COLON ex	{ $$=$2; $$->push($1); $$->push($3); }
@@ -29,5 +30,8 @@ ex		: scalar
 ;
 list	: 				{ $$=new List(); }
 		| list ex		{ $$=$1; $$->push($2); }
+;
+lambda	: 				{ $$=new Lambda(); }
+		| lambda ex		{ $$=$1; $$->push($2); }
 ;
 %%	 
