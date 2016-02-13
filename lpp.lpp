@@ -22,8 +22,10 @@ string LexString;
 \=					TOC(Op,EQ)
 \@					TOC(Op,AT)
 \:					TOC(Op,COLON)
+\~					TOC(Op,TILD)
 
 \+					TOC(Op,ADD)
+\/					TOC(Op,DIV)
 
 [ \t\r\n]+			{}
 %%

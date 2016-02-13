@@ -25,15 +25,16 @@ Sym* Sym::eval() {
 
 Sym* Sym::eq(Sym*o)	{
 	env[val]=o; //return o; }
-	Sym* R = new Op("="); R->push(this); R->push(o); return R; }
+	Sym* R = new Op("="); R->push(this); R->push(o); return o; }
 Sym* Sym::at(Sym*o)	{
 	Sym* R = new Op("@"); R->push(this); R->push(o); return R; }
 Sym* Sym::add(Sym*o)	{
 	Sym* R = new Op("+"); R->push(this); R->push(o); return R; }
+Sym* Sym::str() { return new Str(val); }	
 
 Str::Str(string V):Sym("str",V) {}
 string Str::tagval() { return tagstr(); }
-Sym* Str::add(Sym*o) { return new Str(val+o->val); }
+Sym* Str::add(Sym*o) { return new Str(val+o->str()->val); }
 Sym* upcase(Sym*o) { string S = o->val;
 	transform(S.begin(),S.end(),S.begin(),::toupper);
 	return new Str(S); }
@@ -41,7 +42,8 @@ Sym* upcase(Sym*o) { string S = o->val;
 List::List():Sym("[","]") {}
 
 Op::Op(string V):Sym("op",V) {}
-Sym* Op::eval() { Sym::eval(); 
+Sym* Op::eval() { 
+	if (val=="~") return nest[0]; else Sym::eval();
 	if (nest.size()==2) {
 		if (val=="=") return nest[0]->eq(nest[1]);
 		if (val=="@") return nest[0]->at(nest[1]);

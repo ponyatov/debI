@@ -25,6 +25,7 @@ struct Sym {
 	virtual Sym* eq(Sym*);
 	virtual Sym* at(Sym*);
 	virtual Sym* add(Sym*);
+	virtual Sym* str();
 };
 
 extern map<string,Sym*> env;
