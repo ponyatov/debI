@@ -13,11 +13,12 @@
 %left MUL DIV
 %left POW
 %left AT
+%left TILD
 %%
 REPL	: | REPL ex		{ W($2->eval()); W("\n"); } ;
 scalar	: SYM | STR ;
 ex		: scalar
-		| L ex R	{ $$=$2; }
+		| L ex R		{ $$=$2; }
 		| LQ list RQ	{ $$=$2; }
 		| ex EQ ex		{ $$=$2; $$->push($1); $$->push($3); }
 		| ex AT ex		{ $$=$2; $$->push($1); $$->push($3); }

@@ -30,6 +30,8 @@ Sym* Sym::at(Sym*o)	{
 	Sym* R = new Op("@"); R->push(this); R->push(o); return R; }
 Sym* Sym::add(Sym*o)	{
 	Sym* R = new Op("+"); R->push(this); R->push(o); return R; }
+Sym* Sym::div(Sym*o)	{
+	Sym* R = new Op("/"); R->push(this); R->push(o); return R; }
 Sym* Sym::str() { return new Str(val); }	
 
 Str::Str(string V):Sym("str",V) {}
@@ -40,6 +42,16 @@ Sym* upcase(Sym*o) { string S = o->val;
 	return new Str(S); }
 
 List::List():Sym("[","]") {}
+Sym* List::str() { string S;
+	for (auto it=nest.begin(),e=nest.end();it!=e;it++) S+=(*it)->str()->val;
+	return new Str(S); }
+Sym* List::div(Sym*o) {
+	Sym* L = new List();
+	if (nest.size()>=2) {
+		for (auto it=nest.begin(),e=nest.end();it!=e;it++) {
+			L->push(*it); L->push(o); }
+		L->nest.pop_back(); }
+	return L; }
 
 Op::Op(string V):Sym("op",V) {}
 Sym* Op::eval() { 
@@ -48,6 +60,7 @@ Sym* Op::eval() {
 		if (val=="=") return nest[0]->eq(nest[1]);
 		if (val=="@") return nest[0]->at(nest[1]);
 		if (val=="+") return nest[0]->add(nest[1]);
+		if (val=="/") return nest[0]->div(nest[1]);
 	}
 	return this; }
 

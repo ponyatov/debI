@@ -25,6 +25,7 @@ struct Sym {
 	virtual Sym* eq(Sym*);
 	virtual Sym* at(Sym*);
 	virtual Sym* add(Sym*);
+	virtual Sym* div(Sym*);
 	virtual Sym* str();
 };
 
@@ -36,7 +37,7 @@ extern void W(string);
 
 struct Str:Sym { Str(string); string tagval(); Sym*add(Sym*); };
 
-struct List:Sym { List(); };
+struct List:Sym { List(); Sym*div(Sym*); Sym*str(); };
 
 struct Op:Sym { Op(string); Sym*eval(); };
 
