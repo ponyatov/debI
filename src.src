@@ -1,4 +1,5 @@
-[
+
+ex.ex = { `EX EX+'.'+EX }
 
 skelex = [
 	files = [ 
@@ -17,6 +18,5 @@ hpp = [
 [ '#endif // _H_'+upcase@MODULE ]
 ]
 
-bat.bat = ( file@bat.bat = [ '@start .' 'gvim -p '+files ] )
-
-]
+bat.bat = ( file@bat.bat = [ '@start .' 'gvim -p '+files/' ' hpp ] )
+bat.bat

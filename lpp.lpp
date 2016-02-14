@@ -18,10 +18,14 @@ string LexString;
 \)					TOC(Op,R)
 \[					TOC(Op,LQ)
 \]					TOC(Op,RQ)
+\{					TOC(Op,LB)
+\}					TOC(Op,RB)
 
 \=					TOC(Op,EQ)
 \@					TOC(Op,AT)
 \:					TOC(Op,COLON)
+\~					TOC(Op,TILD)
+\`					TOC(Op,TICK)
 
 \+					TOC(Op,ADD)
 \-					TOC(Op,SUB)
