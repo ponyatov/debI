@@ -2,14 +2,16 @@
 #include "hpp.hpp"
 %}
 %defines %union { Sym*o; }
-%token <o> SYM STR
-%token <o> L R LQ RQ
-%token <o> EQ AT COLON
-%token <o> ADD
+%token <o> SYM STR NUM			/* scalar: symbol 'string' number */
+%token <o> L R LQ RQ LB RB		/* bracket: () [] {} */
+%token <o> EQ AT COLON			/* operator: = @ : */
+%token <o> ADD SUB MUL DIV POW	/* operator: + - * / ^ */
 %type <o> ex scalar list
 
 %left EQ
-%left ADD
+%left ADD SUB
+%left MUL DIV
+%left POW
 %left AT
 %%
 REPL	: | REPL ex		{ W($2->eval()); W("\n"); } ;
@@ -21,6 +23,10 @@ ex		: scalar
 		| ex AT ex		{ $$=$2; $$->push($1); $$->push($3); }
 		| ex COLON ex	{ $$=$2; $$->push($1); $$->push($3); }
 		| ex ADD ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex SUB ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex MUL ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex DIV ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex POW ex		{ $$=$2; $$->push($1); $$->push($3); }
 ;
 list	: 				{ $$=new List(); }
 		| list ex		{ $$=$1; $$->push($2); }
