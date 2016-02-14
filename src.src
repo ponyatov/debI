@@ -1,16 +1,20 @@
 
-ex.ex = { `EX (EX+.+EX) }
+x.x = { `EX (EX+.+EX) }
+
+x.x@src
 
 skelex = [
 	files = [ 
-		src = file @ src.src
+		src = file @ (x.x@'src')
 		log = file @ log.log
-		ypp.ypp lpp.lpp
+		ypp = ypp.ypp
+		lpp.lpp
 		hpp = file @ hpp.hpp
 		cpp = file @ cpp.cpp
 		make = file @ Makefile
 	]
-	bat.bat .gitignore
+	bat = file @ bat.bat
+	.gitignore
 ]
 
 hpp = [
@@ -18,5 +22,8 @@ hpp = [
 [ '#endif // _H_'+upcase@MODULE ]
 ]
 
-bat.bat = ( file@bat.bat = [ '@start .' 'gvim -p '+files/' ' hpp ] )
-bat.bat
+#bat.bat = ( file@bat.bat = [ '@start .' 'gvim -p '+files/' ' hpp ] )
+#bat.bat
+bat = [ '@start .' 'gvim -p '+files/' ' ]
+
+skelex
