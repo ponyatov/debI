@@ -15,6 +15,8 @@ struct Sym {
 	// ---------------
 	vector<Sym*> nest; void push(Sym*);
 	// ---------------
+	static map<string,Sym*> *env;
+	// ---------------
 	map<string,Sym*> par; void parval(Sym*);
 	// ---------------
 	string dump(int depth=0);
@@ -31,7 +33,7 @@ struct Sym {
 	virtual Sym* str();
 };
 
-extern map<string,Sym*> env;
+extern map<string,Sym*> glob;
 extern void env_init();
 
 extern void W(Sym*);

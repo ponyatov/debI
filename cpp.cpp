@@ -11,6 +11,7 @@ Sym::Sym(string V):Sym("",V) {}
 void Sym::push(Sym*o) { nest.push_back(o); }
 void Sym::parval(Sym*o) { par[o->str()->val]=o; }
 
+map<string,Sym*> *Sym::env = &glob;
 string Sym::tagval() { return "<"+tag+":"+val+">"; }
 string Sym::tagstr() { return "<"+tag+":'"+val+"'>"; }
 string Sym::pad(int n) { string S; for (int i=0;i<n;i++) S+='\t'; return S; }
@@ -22,13 +23,13 @@ string Sym::dump(int depth) { string S = "\n"+pad(depth)+tagval();
 	return S;}
 
 Sym* Sym::eval() {
-	Sym*E = env[val]; if (E) return E;
+	Sym*E = (*env)[val]; if (E) return E;
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++) (*it)=(*it)->eval();
 	return this;
 }
 
 Sym* Sym::eq(Sym*o)	{
-	env[val]=o;
+	(*env)[val]=o;
 	Sym* R = new Op("="); R->push(this); R->push(o); return o; }
 Sym* Sym::at(Sym*o)	{
 	Sym* R = new Op("@"); R->push(this); R->push(o); return R; }
@@ -80,12 +81,12 @@ Sym* File::eq(Sym*o) {
 	return this; }
 Sym* file(Sym*o) { return new File(o); }
 
-map<string,Sym*> env;
+map<string,Sym*> glob;
 void env_init() {
-	env["MODULE"]	= new Str(MODULE);
+	glob["MODULE"]	= new Str(MODULE);
 	// string
-	env["upcase"]	= new Fn("upcase",upcase);
+	glob["upcase"]	= new Fn("upcase",upcase);
 	// fileio
-	env["file"]		= new Fn("file",file);
+	glob["file"]	= new Fn("file",file);
 }
 
