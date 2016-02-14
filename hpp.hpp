@@ -8,16 +8,26 @@
 #include <map>
 using namespace std;
 
+struct Sym;
+struct Env {
+	Env* next;
+	Env(Env*X);
+	map<string,Sym*> iron;
+	Sym* lookup(string);
+	void set(string,Sym*);
+	string dump();
+};
+extern Env glob;
+extern void glob_init();
+
 struct Sym {
 	string tag,val;
 	// ---------------
 	Sym(string,string); Sym(string);
 	// ---------------
+	Env *env; void par(Sym*);
+	// ---------------
 	vector<Sym*> nest; void push(Sym*);
-	// ---------------
-	static map<string,Sym*> *env;
-	// ---------------
-	map<string,Sym*> par; void parval(Sym*);
 	// ---------------
 	string dump(int depth=0);
 	virtual string tagval();
@@ -33,8 +43,6 @@ struct Sym {
 	virtual Sym* str();
 };
 
-extern map<string,Sym*> glob;
-extern void env_init();
 
 extern void W(Sym*);
 extern void W(string);

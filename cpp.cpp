@@ -1,36 +1,35 @@
 #include "hpp.hpp"
 #define YYERR "\n\n"<<yylineno<<":"<<msg<<"["<<yytext<<"]\n\n"
 void yyerror(string msg) { cerr<<YYERR; cout<<YYERR; exit(-1); }
-int main() { env_init(); return yyparse(); }
+int main() { glob_init(); return yyparse(); }
 
 void W(Sym*o) { cout << o->dump(); }
 void W(string s) { cout << s; }
 
-Sym::Sym(string T, string V) { tag=T; val=V; }
+Sym::Sym(string T, string V) { tag=T; val=V; env = new Env(&glob); }
 Sym::Sym(string V):Sym("",V) {}
 void Sym::push(Sym*o) { nest.push_back(o); }
-void Sym::parval(Sym*o) { par[o->str()->val]=o; }
+//void Sym::parval(Sym*o) { par[o->str()->val]=o; }
 
-map<string,Sym*> *Sym::env = &glob;
+void Sym::par(Sym*o) { env->set(o->str()->val,o); }
+
 string Sym::tagval() { return "<"+tag+":"+val+">"; }
 string Sym::tagstr() { return "<"+tag+":'"+val+"'>"; }
 string Sym::pad(int n) { string S; for (int i=0;i<n;i++) S+='\t'; return S; }
-string Sym::dump(int depth) { string S = "\n"+pad(depth)+tagval();
-	for (auto pr=par.begin(),e=par.end();pr!=e;pr++)
-		S+=","+pr->first+"="+pr->second->tagval();
+string Sym::dump(int depth) { string S = "\n"+pad(depth)+tagval()+env->dump();
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++)
 		S+=(*it)->dump(depth+1);
 	return S;}
 
 Sym* Sym::eval() {
-	Sym*E = (*env)[val]; if (E) return E;
+	Sym*E = env->lookup(val); if (E) return E;
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++) (*it)=(*it)->eval();
 	return this;
 }
 
 Sym* Sym::eq(Sym*o)	{
-	(*env)[val]=o;
-	Sym* R = new Op("="); R->push(this); R->push(o); return o; }
+	env->next->set(val,o); return o; }
+//	Sym* R = new Op("="); R->push(this); R->push(o); return R; }
 Sym* Sym::at(Sym*o)	{
 	Sym* R = new Op("@"); R->push(this); R->push(o); return R; }
 Sym* Sym::add(Sym*o)	{
@@ -81,12 +80,24 @@ Sym* File::eq(Sym*o) {
 	return this; }
 Sym* file(Sym*o) { return new File(o); }
 
-map<string,Sym*> glob;
-void env_init() {
-	glob["MODULE"]	= new Str(MODULE);
+Env::Env(Env*X) { next=X; }
+void Env::set(string V,Sym*o) { iron[V]=o; }
+Sym* Env::lookup(string V) {
+	auto it = iron.find(V); if (it!=iron.end()) return it->second;
+	if (next) return next->lookup(V);
+	return NULL; }
+
+string Env::dump() { string S;
+	for (auto it=iron.begin(),e=iron.end();it!=e;it++)
+		S += ","+it->first;
+	return S; }
+
+Env glob(NULL);
+void glob_init() {
+	glob.iron["MODULE"]	= new Str(MODULE);
 	// string
-	glob["upcase"]	= new Fn("upcase",upcase);
+	glob.iron["upcase"]	= new Fn("upcase",upcase);
 	// fileio
-	glob["file"]	= new Fn("file",file);
+	glob.iron["file"]	= new Fn("file",file);
 }
 

@@ -36,7 +36,7 @@ list	: 					{ $$=new List(); }
 		| list ex			{ $$=$1; $$->push($2); }
 ;
 lambda	: 					{ $$=new Lambda(); }
-		| lambda TICK SYM	{ $$=$1; $$->parval($3); }
+		| lambda TICK SYM	{ $$=$1; $$->par($3); }
 		| lambda ex			{ $$=$1; $$->push($2); }
 ;
 %%	 

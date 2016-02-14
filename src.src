@@ -1,5 +1,5 @@
 
-ex.ex = { `EX EX+'.'+EX }
+ex.ex = { `EX (EX+.+EX) }
 
 skelex = [
 	files = [ 
